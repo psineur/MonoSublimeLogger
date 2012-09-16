@@ -10,6 +10,7 @@ namespace SublimeLogger
     {
         private int ErrorCount;
         private int WarningCount;
+		private string ProjectDirectory = "";
 
         public override void Initialize(IEventSource eventSource)
         {
@@ -26,6 +27,9 @@ namespace SublimeLogger
 
         void ProjectStarted(object sender, ProjectStartedEventArgs e)
         {
+			string directoryName = Path.GetDirectoryName(e.ProjectFile);
+			if (null != directoryName)
+				this.ProjectDirectory = directoryName;
 			// Console.WriteLine("Project Started: " + e.ProjectFile);
         }
 
@@ -47,7 +51,7 @@ namespace SublimeLogger
 
         void ErrorRaised(object sender, BuildErrorEventArgs e)
         {
-            string fullPath = e.File;
+			string fullPath = Path.Combine(this.ProjectDirectory, e.File);
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine("{0}({1},{2})  error:{3}  {4}", fullPath, e.LineNumber, e.ColumnNumber, e.Code, e.Message);
             Console.WriteLine();
@@ -57,7 +61,7 @@ namespace SublimeLogger
 
         void WarningRaised(object sender, BuildWarningEventArgs e)
         {
-            string fullPath = e.File.ToString();
+            string fullPath = Path.Combine(this.ProjectDirectory, e.File);
             Console.ForegroundColor = ConsoleColor.DarkYellow;
                         
             Console.WriteLine("{0}({1},{2})  warning:{3}  {4}", fullPath, e.LineNumber, e.ColumnNumber, (e.Code != null) ? e.Code : "", e.Message);
