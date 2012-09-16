@@ -59,12 +59,11 @@ namespace SublimeLogger
         {
             string fullPath = e.File.ToString();
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            if(e.Code != null)
-            {
-                Console.WriteLine("{0}({1},{2})  warning:{3}  {4}", fullPath, e.LineNumber, e.ColumnNumber, e.Code, e.Message);
-                Console.WriteLine();
-                WarningCount++;
-            }
+                        
+            Console.WriteLine("{0}({1},{2})  warning:{3}  {4}", fullPath, e.LineNumber, e.ColumnNumber, (e.Code != null) ? e.Code : "", e.Message);
+            Console.WriteLine();
+            WarningCount++;
+            
             Console.ForegroundColor = ConsoleColor.White;
         }
 
