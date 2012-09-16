@@ -10,13 +10,13 @@ namespace SublimeLogger
     {
         private int ErrorCount;
         private int WarningCount;
-        private string ProjectDirectory;
-
 
         public override void Initialize(IEventSource eventSource)
         {
+			Console.ForegroundColor = ConsoleColor.White;
+			Console.WriteLine("Sublime Text 2 output logger by Jacob Pennock");
+
             eventSource.ProjectStarted += ProjectStarted;
-            eventSource.BuildStarted += BuildStarted;
             eventSource.BuildFinished += BuildFinished;
             eventSource.ErrorRaised += ErrorRaised;
             eventSource.WarningRaised += WarningRaised;
@@ -26,8 +26,7 @@ namespace SublimeLogger
 
         void ProjectStarted(object sender, ProjectStartedEventArgs e)
         {
-            ProjectDirectory = Path.GetDirectoryName(e.ProjectFile);
-            Console.WriteLine(String.Empty, e);
+			// Console.WriteLine("Project Started: " + e.ProjectFile);
         }
 
         void BuildFinished(object sender, BuildFinishedEventArgs e)
@@ -46,14 +45,9 @@ namespace SublimeLogger
             Console.BackgroundColor = ConsoleColor.Black;
         }
 
-        void BuildStarted(object sender, BuildStartedEventArgs e)
-        {
-            Console.WriteLine("Sublime Text 2 output logger by Jacob Pennock");
-        }
-
         void ErrorRaised(object sender, BuildErrorEventArgs e)
         {
-            string fullPath = Path.Combine(ProjectDirectory, e.File);
+            string fullPath = e.File;
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine("{0}({1},{2})  error:{3}  {4}", fullPath, e.LineNumber, e.ColumnNumber, e.Code, e.Message);
             Console.WriteLine();
@@ -63,8 +57,7 @@ namespace SublimeLogger
 
         void WarningRaised(object sender, BuildWarningEventArgs e)
         {
-
-            string fullPath = Path.Combine(ProjectDirectory, e.File);
+            string fullPath = e.File.ToString();
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             if(e.Code != null)
             {
